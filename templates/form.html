@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Formulario de Recomendación de Plantas</title>
+</head>
+<body>
+<h1>Formulario de Recomendación de Plantas</h1>
+<form id="recommendationForm">
+    <label for="light">Exposición solar (0-10):</label>
+    <input type="number" id="light" name="light" min="0" max="10" required><br>
+    <input type="submit" value="Obtener recomendaciones">
+</form>
+
+<script>
+    // Función para obtener la ubicación del usuario y enviarla al servidor
+    function getLocationAndSubmit(event) {
+        event.preventDefault();
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                const light = document.getElementById('light').value;
+
+                // Crear un objeto FormData para enviar los datos al servidor
+                const formData = new FormData();
+                formData.append('latitude', latitude);
+                formData.append('longitude', longitude);
+                formData.append('light', light);
+
+                // Realizar una solicitud POST al servidor Flask con los datos de ubicación
+                fetch('/recommend', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.text())
+                    .then(data => {
+                        // Mostrar la respuesta del servidor en la página
+                        document.body.innerHTML = data;
+                    })
+                    .catch(error => console.error('Error:', error));
+            });
+        } else {
+            console.log("Geolocalización no es soportada por este navegador.");
+        }
+    }
+
+    // Escuchar el evento de envío del formulario y llamar a la función getLocationAndSubmit
+    document.getElementById('recommendationForm').addEventListener('submit', getLocationAndSubmit);
+</script>
+</body>
+</html>
+

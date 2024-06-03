@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Recomendaciones de Plantación</title>
+</head>
+<body>
+<h1>Recomendaciones de Plantación</h1>
+<ul>
+    {% for recommendation in recommendations %}
+        <li>
+            <strong>Nombre científico:</strong> {{ recommendation.scientific_name }}<br>
+            {% if recommendation.common_name %}
+                <strong>Nombre común:</strong> {{ recommendation.common_name }}<br>
+            {% endif %}
+            <strong>Familia:</strong> {{ recommendation.family }}<br>
+            <strong>Género:</strong> {{ recommendation.genus }}<br>
+            <strong>Duración:</strong> {{ recommendation.duration }}<br>
+            {% if recommendation.photo_url %}
+                <img src="{{ recommendation.photo_url }}" alt="Foto de la planta"><br>
+            {% else %}
+                <em>No hay foto disponible</em><br>
+            {% endif %}
+
+        </li>
+    {% endfor %}
+</ul>
+</body>
+</html>
