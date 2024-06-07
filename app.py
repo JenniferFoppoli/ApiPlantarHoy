@@ -34,7 +34,7 @@ def get_region_from_coordinates(lat, lon):
 
 def get_climate_from_coordinates(lat, lon):
     weather_api_key = '0a746bf3706049219aa175817240106'
-    url = f'http://api.weatherapi.com/v1/current.json?key={weather_api_key}&q={lat},{lon}'
+    url = f'https://api.weatherapi.com/v1/current.json?key={weather_api_key}&q={lat},{lon}'
     response = requests.get(url)
     data = response.json()
     humidity = data['current']['humidity']
@@ -52,8 +52,7 @@ def get_plant_recommendations(region, climate, light):
     humidity = min(max(climate['humidity'] // 10, 0), 10)
     precipitation = climate['precipitation']
     temperature = climate['temperature']
-
-    url = (f'https://trefle.io/api/v1/plants?token={trefle_api_key}'
+    url2 = (f'https://trefle.io/api/v1/plants?token={trefle_api_key}'
            f'&filter[distribution]={region}'
            f'&filter_not[edible_part]=null'
            f'&range[maximum_height_cm]=5,100'
@@ -63,6 +62,16 @@ def get_plant_recommendations(region, climate, light):
            f'&range[minimum_temperature]={temperature - 10},{temperature}'
            f'&range[maximum_temperature]={temperature},{temperature + 10}'
            f'&filter_not[light]={light}')
+
+
+    url = (f'https://trefle.io/api/v1/plants?token={trefle_api_key}'
+            f'&filter_not[edible_part]=null'
+            f'&range[atmospheric_humidity]={humidity}'
+            f'&range[minimum_precipitation]={precipitation - 100},{precipitation}'
+            f'&range[maximum_precipitation]={precipitation},{precipitation + 100}'
+            f'&range[minimum_temperature]={temperature - 10},{temperature}'
+            f'&range[maximum_temperature]={temperature},{temperature + 10}'
+            f'&filter_not[light]={light}')
 
     response = requests.get(url)
     data = response.json()
